@@ -1,5 +1,5 @@
 # Fair-Evaluator-An-Adversarial-Debiasing-based-Deep-Learning-Framework-in-Student-Admissions
-Our paper "Fair-Evaluator-An-Adversarial-Debiasing-based-Deep-Learning-Framework-in-Student-Admissions" has been published in the Sixth International Conference on Cognitive Machine Intelligence 2024.
+Our paper "Fair-Evaluator-An-Adversarial-Debiasing-based-Deep-Learning-Framework-in-Student-Admissions" has been accepted in the Sixth IEEE International Conference on Cognitive Machine Intelligence 2024.
 
 ## Paper Description
 This work considers the problem of enhancing the authenticity and fairness of undergraduate student admission decision-making process by employing state-of-the-art Deep Learning (DL) models with advanced bias-mitigation techniques. Traditional admission processes often introduce biases that can disadvantage underrepresented or marginalized groups, highlighting the need for more equitable and efficient methods. Although the DL models have emerged as a promising alternative offering superior performance and higher scalability than the classical Machine Learning approaches, fairness concerns remain a significant issue. 
