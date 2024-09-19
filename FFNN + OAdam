@@ -24,7 +24,6 @@ from sklearn.metrics import matthews_corrcoef
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import auc
 
-
 torch.manual_seed(1)
 np.random.seed(7)
 sns.set(style="dark", palette="pastel", color_codes=True, context="notebook")
@@ -88,7 +87,6 @@ train_data = PandasDataSet(X_train, y_train, Z_train)
 test_data = PandasDataSet(X_test, y_test, Z_test)
 train_loader = DataLoader(train_data, batch_size=32, shuffle=True, drop_last=True)
 test_loader = DataLoader(test_data, batch_size=32, shuffle=False)
-
 print('# training samples:', len(train_data))
 print('# batches:', len(train_loader))
 class Classifier(nn.Module):
@@ -103,15 +101,9 @@ class Classifier(nn.Module):
             nn.ReLU(),
             nn.Dropout(p_dropout),
             nn.Linear(n_hidden2, n_hidden3),
-#             nn.ReLU(),
             nn.Tanh(),
             nn.Dropout(p_dropout),
             nn.Linear(n_hidden3, 1)
-            
-#             nn.Linear(n_hidden3, n_hidden4),
-#             nn.Tanh(),
-#             nn.Dropout(p_dropout),
-#             nn.Linear(n_hidden4, 1)
         )
 
     def forward(self, x):
@@ -127,8 +119,6 @@ decay_rate = hyperpar.lr / hyperpar.num_epochs
 clf_optimizer = OAdam(clf.parameters(), lr = hyperpar.lr)
 def pretrain_classifier(clf, data_loader, optimizer, criterion):
     for x, y, _ in data_loader:
-#         x = x.to(device)
-#         y = y.to(device)
         clf.zero_grad()
         p_y = clf(x)
         loss = criterion(p_y, y)
@@ -136,21 +126,16 @@ def pretrain_classifier(clf, data_loader, optimizer, criterion):
         entr_reg = 0.0
         for param in clf.parameters():
             l2_reg += torch.norm(param)**2
-            ####
             entr_reg += torch.mean(torch.sum(-p_y * torch.log(p_y), dim=1))
-            ####
         
         loss += 0.5 * l2_lambda * l2_reg + entropy_lambda * entr_reg
-
         loss.backward()
         optimizer.step()
     return clf
 
-
 N_CLF_EPOCHS = 2
 l2_lambda = hyperpar.l2_lambda  # Regularization parameter
 entropy_lambda = hyperpar.entropy_lambda
-
 for epoch in range(N_CLF_EPOCHS):
     clf = pretrain_classifier(clf, train_loader, clf_optimizer, clf_criterion)
 class Adversary(nn.Module):
@@ -170,20 +155,12 @@ class Adversary(nn.Module):
     def forward(self, x):
         return torch.sigmoid(self.network(x))
 
-
-
-
 #Fairness parameter
-# lambdas = torch.Tensor([130, 30]).to(device)
 lambdas = torch.Tensor([hyperpar.sens1weight, hyperpar.sens2weight]).to(device)
-
-
 adv = Adversary(Z_train.shape[1], a_hidden1 = hyperpar.a_hidden1, a_hidden2=hyperpar.a_hidden2, 
                 a_hidden3=hyperpar.a_hidden3)
 adv.to(device)
 adv_criterion = nn.BCELoss(reduce=False)
-# adv_optimizer = optim.Adam(adv.parameters())
-
 adv_optimizer = OAdam(adv.parameters(), lr = hyperpar.lr)
 def pretrain_adversary(adv, clf, data_loader, optimizer, criterion):
     for x, _, z in data_loader:
@@ -196,23 +173,16 @@ def pretrain_adversary(adv, clf, data_loader, optimizer, criterion):
     return adv
 
 N_ADV_EPOCHS = 3
-
 for epoch in range(N_ADV_EPOCHS):
     pretrain_adversary(adv, clf, train_loader, adv_optimizer, adv_criterion)
 with torch.no_grad():
     pre_clf_test = clf(test_data.tensors[0])
     pre_adv_test = adv(pre_clf_test)
-
-
 y_pre_clf = pd.Series(pre_clf_test.data.cpu().numpy().ravel(),
                       index=y_test.index)
 y_pre_adv = pd.DataFrame(pre_adv_test.cpu().numpy(), columns=Z.columns)
-
-# print("Z_test outside plot_distribution \n", Z_test)
-
 fig = plot_distributions(y_test, Z_test, y_pre_clf, y_pre_adv)
 fig.savefig('images/torch_biased_training.png')
-
 epoch_metrics = {
     'p_rule_low_income': p_rule(y_pre_clf, Z_test['low_income']),
     'p_rule_first_generation': p_rule(y_pre_clf, Z_test['first_generation_flag']),
@@ -253,7 +223,6 @@ def train(clf, adv, data_loader, clf_criterion, adv_criterion,
     clf_loss = unfair_clf_loss - (adv_criterion(adv(p_y), z) * lambdas).mean()
     clf_loss.backward()
     clf_optimizer.step()
-    
     if epoch%5 == 0:
         wandb.log(
                     {
@@ -264,7 +233,6 @@ def train(clf, adv, data_loader, clf_criterion, adv_criterion,
                     step=epoch,
                 )
 return clf, adv
-
 N_EPOCH_COMBINED = hyperpar.num_epochs 
 for epoch in range(1, N_EPOCH_COMBINED):
     clf, adv = train(clf, adv, train_loader, clf_criterion, adv_criterion,
@@ -285,8 +253,7 @@ for epoch in range(1, N_EPOCH_COMBINED):
         display.clear_output(wait=True)
         plt.savefig(f'output/torch_{epoch+1:08d}.png', bbox_inches='tight')
         plt.show(plt.gcf())
-        
-        
+             
 epoch_metrics = {
     'p_rule_low_income': p_rule(y_post_clf, Z_test['low_income']),
     'p_rule_first_generation': p_rule(y_post_clf, Z_test['first_generation_flag']),
