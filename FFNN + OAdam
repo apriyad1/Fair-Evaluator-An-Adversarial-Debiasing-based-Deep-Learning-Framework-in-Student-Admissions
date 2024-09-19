@@ -13,9 +13,8 @@ from sklearn.utils.class_weight import compute_class_weight
 from torch.utils.data import TensorDataset
 from torch.utils.data import DataLoader
 from fairness.helpers import plot_distributions
-from fairness.helpers import p_rule
-from fairness.helpers import demographic_parity
-from fairness.helpers import equalized_odds
+from fairness import p_rule
+from fairness import demographic_parity
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
