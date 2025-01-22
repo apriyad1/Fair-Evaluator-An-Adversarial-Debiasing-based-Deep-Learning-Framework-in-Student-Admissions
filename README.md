@@ -6,6 +6,18 @@ This work considers the problem of enhancing the authenticity and fairness of un
 
 We propose an adversarial debiasing-based DL framework that integrates the Optimistic Adam (OAdam) optimizer, ensuring consistent and stable model training crucial for achieving reliable and unbiased outcomes. Our framework leverages data from applicants to the Computer Science Department at the University of California, Irvine. To ensure holistic evaluation of applicants profile we utilize a dataset that encompasses a wide range of features showcasing demographics, academic records, high school information, and essay responses. By prioritizing the recall score alongside the fairness metrics, our approach effectively handles the fairness-accuracy trade-off, considerably minimizing the false negatives and ensuring equitable consideration for marginalized groups in admission decisions. Through rigorous experimentation and analysis, our comprehensive study demonstrates that the proposed fairness-aware Input Convex Neural Network model using OAdam optimizer, achieves high fairness metrics while ensuring a balanced predictive performance. The proposed model improves the p% rule scores by an average of 39.989\% across sensitive attributes and achieves recall scores 0.97\% higher than those of unfair baseline models.
 
+## Cite us
+@INPROCEEDINGS{10835546,
+  author={Priyadarshini, Amisha and Gago-Masague, Sergio},
+  booktitle={2024 IEEE 6th International Conference on Cognitive Machine Intelligence (CogMI)}, 
+  title={Fair Evaluator: An Adversarial Debiasing-based Deep Learning Framework in Student Admissions}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={152-161},
+  keywords={Measurement;Deep learning;Training;Computer science;Scalability;Neural networks;Decision making;Predictive models;Reliability;Machine intelligence;fairness;deep learning;adversarial debiasing;undergraduate student admissions;holistic evaluation},
+  doi={10.1109/CogMI62246.2024.00029}}
+
 ## Contact Information
 
 If you are interested in learning more about our research or would like to connect to explore potential collaborations, please feel free to reach out to me at apriyad1@uci.edu.
